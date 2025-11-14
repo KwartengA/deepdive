@@ -48,7 +48,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.kwarteng.deepdive"
     },
     "extra": {
       "router": {},
