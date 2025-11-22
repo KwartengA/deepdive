@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 
-export default function Home() {
+export default function TabsLayout() {
     
   return (
    <Tabs>
