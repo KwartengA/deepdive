@@ -1,11 +1,25 @@
 import onboarding1 from "../assets/images/onboarding1.png";
 import onboarding2 from "../assets/images/onboarding2.png";
 import onboarding3 from "../assets/images/onboarding3.png";
+import signUp from "../assets/images/signUp.png";
+import check from "../assets/images/check.png";
+import lock from "../assets/icons/lock.png";
+import email from "../assets/icons/email.png";
+import person from "../assets/icons/person.png";
 
 export const images = {
 onboarding1,
 onboarding2,
-onboarding3
+onboarding3,
+signUp,
+check,
+
+}
+
+export const icons = {
+    lock,
+    email,
+    person,
 }
 
 

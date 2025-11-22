@@ -15,14 +15,26 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#232323",
+          "image": "./assets/splash-icon-light.png",
+          "dark": {
+            "image": "./assets/splash-icon-dark.png",
+            "backgroundColor": "#000000"
+          },
+          "imageWidth": 200
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
     },
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icons/ios-dark.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/icons/splash-icon-dark.png",
