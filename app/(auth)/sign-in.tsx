@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
 import { images, icons } from "@/constants";
+import { StatusBar } from "expo-status-bar";
 
 export default function SignIn() {
   const [form, setForm] = useState({
@@ -62,6 +63,7 @@ export default function SignIn() {
 
   return (
     <View className="flex-1 bg-white">
+      <StatusBar hidden/>
       <View className="relative w-full h-[250px]">
         <Image source={images.signUp} className="z-0 w-full h-[250px]" />
         <Text className="text-4xl text-black font-bold absolute bottom-5 left-5">

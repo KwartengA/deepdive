@@ -12,7 +12,7 @@ export default function Welcome() {
 
   return (
     <SafeAreaView style={{ flex: 1, }}>
-      <TouchableOpacity
+      <TouchableOpacity hitSlop={0.5}
         onPress={() => {
           router.push('/(auth)/sign-up');
         }}

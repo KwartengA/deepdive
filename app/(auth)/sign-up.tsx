@@ -6,6 +6,7 @@ import InputField from "@/components/InputField";
 import { useSignUp } from "@clerk/clerk-expo";
 import { useRouter, Link } from "expo-router";
 import CustomButton from "@/components/CustomButton";
+import { StatusBar } from "expo-status-bar";
 
 export default function SignUp() {
   const [form, setForm] = useState({
@@ -163,6 +164,7 @@ export default function SignUp() {
 
   return (
     <View className="flex-1 bg-white">
+      <StatusBar hidden/>
       <View className="relative w-full h-[250px]">
         <Image source={images.signUp} className="z-0 w-full h-[250px]" />
         <Text className="text-4xl text-black font-bold absolute bottom-5 left-5 ">
@@ -215,7 +217,16 @@ export default function SignUp() {
                 <Text className="text-blue-500">Sign In</Text>
               </Link>
             </View>
+
+            <View className="flex-row justify-center mt-5">
+              <TouchableOpacity hitSlop={0.5} onPress={()=>{
+                router.replace("/(tabs)/home");
+              }}>
+                <Text>Home</Text>
+              </TouchableOpacity>
+            </View>
           </>
+          
         ) : null}
       </View>
 

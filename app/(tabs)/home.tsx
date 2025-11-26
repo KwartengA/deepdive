@@ -1,20 +1,44 @@
-import {View,Text,Button} from "react-native";
-import { useAuth } from "@clerk/clerk-expo";
-import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {Text, TouchableOpacity, View} from "react-native";
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import InputField from "@/components/InputField";
+import { icons } from "@/constants";
+import { StatusBar } from "expo-status-bar";
 
 export default function Home(){
-    const { signOut } = useAuth();
-    const router = useRouter();
-
-    const handleSignOut = async () => {
-        await signOut();
-        router.replace("/(auth)/welcome");
-    };
-
     return (
-        <View className="flex-1 justify-center items-center p-5">
-            <Text className="text-2xl mb-4">Home</Text>
-            <Button title="Sign Out (For Testing)" onPress={handleSignOut} />
-        </View>
+        <SafeAreaView className="flex-1 bg-white">
+            <StatusBar hidden/>
+            <View className="flex-row items-center justify-between px-4 mb-4">
+                <View className="w-10 h-10 bg-blue-300 rounded-full items-center justify-center">
+                    <Text className="text-sm font-semibold">KA</Text>
+                </View>
+
+                <Text className="font-bold text-2xl">Home</Text>
+
+                <View className="flex-row gap-5">
+                    <TouchableOpacity hitSlop={10}>
+                        <FontAwesome5 name="tasks" size={24} color="black" />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity hitSlop={10}>
+                        <FontAwesome name="bell" size={24} color="black" />
+                    </TouchableOpacity>
+                </View>
+            </View>
+ 
+            <View className="px-4 mb-4">
+                <InputField
+                    label=""
+                    placeholder="Search"
+                    icon={icons.search}
+                    textContentType="none"
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                    className="px-4 mb-4"
+                />
+            </View>
+        </SafeAreaView>
     )
 }
