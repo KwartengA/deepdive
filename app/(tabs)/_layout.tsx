@@ -2,40 +2,64 @@ import { Tabs } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { theme } from '@/theme';
 
 export default function TabsLayout() {
-    
+
   return (
-   <Tabs screenOptions={{tabBarActiveTintColor: "blue", 
-    tabBarInactiveTintColor:theme.calmblue,
+   <Tabs screenOptions={{
+    tabBarActiveTintColor: "#3b82f6",
+    tabBarInactiveTintColor: "#9ca3af",
+    tabBarStyle: {
+      position: 'absolute',
+      bottom: 30,
+      left: 10,
+      right: 10,
+      backgroundColor: '#00000',
+      borderTopWidth: 0,
+      elevation: 0,
+      height: 65,
+      paddingBottom: 10,
+      paddingTop: 10,
+      paddingHorizontal: 60,
+      borderRadius: 45,
+      shadowRadius: 8,
+    },
+    tabBarLabelStyle: {
+      fontSize: 12,
+      fontWeight: '500',
+    },
+    tabBarShowLabel: true,
+    tabBarItemStyle: {
+      paddingHorizontal: 5,
+    },
     }}>
+      
 <Tabs.Screen
 name = 'home'  options={{
-  title: "Home", 
+  title: "Home",
   headerShown:false,
-  tabBarIcon:({size,color})=>(
-    <Entypo name="home" size={size} color={color} />
+  tabBarIcon:({color})=>(
+    <Entypo name="home" size={28} color={color} />
   ),
 }}
 />
 
-<Tabs.Screen 
+<Tabs.Screen
 name = 'analytics'  options={{
-  title: "Analytics", 
+  title: "Analytics",
   headerShown:false,
-  tabBarIcon:({size,color}) => (
-    <MaterialCommunityIcons name="google-analytics" size={size} color={color} />
+  tabBarIcon:({color}) => (
+    <MaterialCommunityIcons name="google-analytics" size={28} color={color} />
   )
 }}
 />
 
-<Tabs.Screen 
+<Tabs.Screen
 name = 'settings'  options={{
-  title: "Settings", 
+  title: "Settings",
   headerShown:false,
-  tabBarIcon:({size,color}) => (
-   <Ionicons name="settings" size={size} color={color} />
+  tabBarIcon:({color}) => (
+   <Ionicons name="settings" size={28} color={color} />
   )
 }}
 />

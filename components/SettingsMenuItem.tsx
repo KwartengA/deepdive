@@ -13,6 +13,7 @@ interface SettingsMenuItemProps {
   hasAccordion?: boolean;
   children?: React.ReactNode;
   iconFamily?: 'Ionicons' | 'MaterialIcons';
+  iconColor?: string;
 }
 
 const SettingsMenuItem: React.FC<SettingsMenuItemProps> = ({
@@ -22,6 +23,7 @@ const SettingsMenuItem: React.FC<SettingsMenuItemProps> = ({
   hasAccordion = false,
   children,
   iconFamily = 'Ionicons',
+  iconColor,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -36,24 +38,24 @@ const SettingsMenuItem: React.FC<SettingsMenuItemProps> = ({
 
   const renderIcon = () => {
     if (iconFamily === 'MaterialIcons') {
-      return <MaterialIcons name={icon as keyof typeof MaterialIcons.glyphMap} size={20} color="#1040b9" />;
+      return <MaterialIcons name={icon as keyof typeof MaterialIcons.glyphMap} size={24} color={iconColor} />;
     }
-    return <Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={20} color="#1040b9" />;
+    return <Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={24} color={iconColor} />;
   };
 
   return (
     <View className="mb-2">
       <TouchableOpacity
-        className="flex-row items-center justify-between bg-gray-50 rounded-xl px-4 py-4"
+        className="flex-row items-center justify-between bg-gray-800 rounded-xl px-4 py-4"
         onPress={handlePress}
         accessibilityRole="button"
         accessibilityState={{ expanded: hasAccordion ? isExpanded : undefined }}
       >
         <View className="flex-row items-center flex-1">
-          <View className="w-10 h-10 bg-blue-400 rounded-full items-center justify-center mr-3">
+          <View className="mr-3">
             {renderIcon()}
           </View>
-          <Text className="text-base font-medium text-gray-800">{title}</Text>
+          <Text className="text-base font-medium text-white">{title}</Text>
         </View>
 
         {hasAccordion && children ? (

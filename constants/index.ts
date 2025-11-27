@@ -6,6 +6,7 @@ import check from "../assets/images/check.png";
 import lock from "../assets/icons/lock.png";
 import email from "../assets/icons/email.png";
 import person from "../assets/icons/person.png";
+import search from "../assets/images/search.png";
 
 export const images = {
 onboarding1,
@@ -20,6 +21,7 @@ export const icons = {
     lock,
     email,
     person,
+    search,
 }
 
 
