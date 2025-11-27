@@ -360,9 +360,7 @@ export default function Settings() {
                                         onChangeText={setTempProfileName}
                                         autoCapitalize="words"
                                     />
-                                    {/* <Text className="text-gray-500 text-xs mt-2">
-                                        This is how others will see you.
-                                    </Text> */}
+                                  
                                 </View>
 
                                 <View className="mb-6">
@@ -376,9 +374,7 @@ export default function Settings() {
                                         onChangeText={setTempProfileStatus}
                                         multiline
                                     />
-                                    {/* <Text className="text-gray-500 text-xs mt-5">
-                                        Something about you
-                                    </Text> */}
+                    
                                 </View>
                             </View>
                         </ScrollView>
