@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, Modal, Image } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, Modal, Image, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import SettingsMenuItem from "@/components/SettingsMenuItem";
@@ -13,18 +13,22 @@ export default function Settings() {
     const { user } = useUser();
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+    const [showPersonalInfoModal, setShowPersonalInfoModal] = useState(false);
+    const [showNotificationsModal, setShowNotificationsModal] = useState(false);
+    const [showDisplaySoundModal, setShowDisplaySoundModal] = useState(false);
+
     const [feedbackName, setFeedbackName] = useState("");
     const [feedbackEmail, setFeedbackEmail] = useState("");
     const [feedbackMessage, setFeedbackMessage] = useState("");
 
-
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [profileName, setProfileName] = useState("");
-    const [profileStatus, setProfileStatus] = useState("");
 
     const [tempProfileImage, setTempProfileImage] = useState<string | null>(null);
     const [tempProfileName, setTempProfileName] = useState("");
-    const [tempProfileStatus, setTempProfileStatus] = useState("");
+
+    const [pushNotificationsEnabled, setPushNotificationsEnabled] = useState(false);
+    const [hapticsEnabled, setHapticsEnabled] = useState(false);
     
     const pickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -49,21 +53,18 @@ export default function Settings() {
     const handleEditProfile = () => {
         setTempProfileImage(profileImage);
         setTempProfileName(profileName);
-        setTempProfileStatus(profileStatus);
         setShowProfileModal(true);
     };
 
     const handleSaveProfile = () => {
         setProfileImage(tempProfileImage);
         setProfileName(tempProfileName);
-        setProfileStatus(tempProfileStatus);
         setShowProfileModal(false);
     };
 
     const handleCancelProfile = () => {
         setTempProfileImage(profileImage);
         setTempProfileName(profileName);
-        setTempProfileStatus(profileStatus);
         setShowProfileModal(false);
     };
     
@@ -127,7 +128,7 @@ export default function Settings() {
         }
     };
     return (
-        <SafeAreaView className="flex-1 bg-gray-950">
+        <SafeAreaView className="flex-1 bg-gray-200">
             <StatusBar hidden />
             <ScrollView
                 showsVerticalScrollIndicator={false}
@@ -150,15 +151,9 @@ export default function Settings() {
                         </Text>
                     )}
 
-                    {profileStatus && (
-                        <Text className="text-sm text-gray-600 mb-3">
-                            {profileStatus}
-                        </Text>
-                    )}
-
                     <TouchableOpacity
                         onPress={handleEditProfile}
-                        className="mt-3 px-6 py-2 bg-black rounded-md"
+                        className="mt-3 px-6 py-2 bg-gray-200 rounded-md"
                     >
                         <Text className="text-blue-400 text-md font-medium">
                             Edit Profile
@@ -169,62 +164,34 @@ export default function Settings() {
                 
                 <View className="px-4">
                     <SettingsSection title="MY ACCOUNT">
-                        <SettingsMenuItem
-                            iconFamily="Ionicons"
-                            icon="person-outline"
-                            iconColor="#3b82f6"
-                            title="Personal Information"
-                            hasAccordion
-                        >
-                            <Text className="text-gray-600 text-sm">
-                                View and edit your personal details
-                            </Text>
-                        </SettingsMenuItem>
-
-                        <SettingsMenuItem
-                            iconFamily="Ionicons"
-                            icon="timer-outline"
-                            iconColor="#CD5700"
-                            title="Timer Preferences"
-                            hasAccordion
-                        >
-                            <Text className="text-gray-600 text-sm">
-                                Customize your timer
-                            </Text>
-                        </SettingsMenuItem>
 
                         <SettingsMenuItem
                             iconFamily="Ionicons"
                             icon="hand-left"
-                            iconColor="#AFEEEE"
+                            iconColor="#191970"
                             title="Display & Sound"
-                            hasAccordion
-                        >
-                            <Text className="text-gray-600 text-sm">
-                                Configure your haptics
-                            </Text>
-                        </SettingsMenuItem>
+                            description="Manage how content is displayed to you."
+                            onPress={() => setShowDisplaySoundModal(true)}
+                        />
 
                         <SettingsMenuItem
                             iconFamily="Ionicons"
                             icon="notifications-outline"
-                            iconColor="#e60023"
+                            iconColor="#004526"
                             title="Notifications"
-                            hasAccordion
-                        >
-                            <Text className="text-gray-600 text-sm">
-                                Configure notification preferences
-                            </Text>
-                        </SettingsMenuItem>
+                            description="Select the kinds of notifications you get about your activities and recommendations."
+                            onPress={() => setShowNotificationsModal(true)}
+                        />
 
-                    <SettingsMenuItem
+                        <SettingsMenuItem
                             iconFamily="MaterialIcons"
                             icon="feedback"
                             iconColor="#FEBE10"
                             title="Submit Feedback"
+                            description="Send a description of a challenge encountered or a feature you want to recommend"
                             onPress={() => setShowFeedbackModal(true)}
                         />
-                    
+
                     </SettingsSection>
 
                 </View>
@@ -362,24 +329,172 @@ export default function Settings() {
                                     />
                                   
                                 </View>
-
-                                <View className="mb-6">
-                                    <Text className="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wide">
-                                        Status
-                                    </Text>
-                                    <TextInput
-                                        className="bg-gray-800 text-white rounded-lg px-4 py-4 text-base"
-                                        placeholderTextColor="#6B7280"
-                                        value={tempProfileStatus}
-                                        onChangeText={setTempProfileStatus}
-                                        multiline
-                                    />
-                    
-                                </View>
                             </View>
                         </ScrollView>
                     </View>
                 </SafeAreaView>
+            </Modal>
+
+            <Modal
+                visible={showPersonalInfoModal}
+                animationType="slide"
+                presentationStyle="pageSheet"
+                onRequestClose={() => setShowPersonalInfoModal(false)}
+            >
+                <SafeAreaView className="flex-1 bg-gray-950">
+                    <View className="flex-1">
+                        <View className="flex-row items-center justify-between px-4 py-4 border-b border-gray-800">
+                            <TouchableOpacity onPress={() => setShowPersonalInfoModal(false)}>
+                                <Text className="text-blue-500 text-lg">Close</Text>
+                            </TouchableOpacity>
+                            <Text className="text-lg font-semibold text-white">Personal Information</Text>
+                            <View style={{ width: 60 }} />
+                        </View>
+
+                        <View className="px-6 pt-6">
+                            <View className="bg-gray-800 rounded-xl p-4 mb-4">
+                                <Text className="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wide">
+                                    Full Name
+                                </Text>
+                                <Text className="text-white text-lg">
+                                    {user?.fullName || "Not provided"}
+                                </Text>
+                            </View>
+
+                            <View className="bg-gray-800 rounded-xl p-4">
+                                <Text className="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wide">
+                                    Email Address
+                                </Text>
+                                <Text className="text-white text-lg">
+                                    {user?.primaryEmailAddress?.emailAddress || "Not provided"}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                </SafeAreaView>
+            </Modal>
+
+            <Modal
+                visible={showNotificationsModal}
+                animationType="fade"
+                transparent={true}
+                onRequestClose={() => setShowNotificationsModal(false)}
+            >
+                <View className="flex-1 bg-black/50 items-center justify-center px-4">
+                    <View className="bg-white rounded-3xl p-6 w-full max-w-md">
+                        <View className="items-center mb-6">
+                            <Text className="text-xl font-semibold text-gray-900 mb-2">
+                                Notification Preferences
+                            </Text>
+                            <Text className="text-gray-600 text-center text-sm">
+                                Choose what notifications you want to receive.
+                            </Text>
+                        </View>
+
+                        <View className="mb-6">
+                            <View className="flex-row items-start py-4 border-b border-gray-100">
+                                <Switch
+                                    value={pushNotificationsEnabled}
+                                    onValueChange={setPushNotificationsEnabled}
+                                    trackColor={{ false: '#E5E7EB', true: '#50C878' }}
+                                    thumbColor="#ffffff"
+                                />
+                                <View className="flex-1 ml-4">
+                                    <Text className="text-gray-900 font-medium mb-1">
+                                        Push Notifications
+                                    </Text>
+                                    <Text className="text-gray-500 text-sm leading-5">
+                                        Receive notifications on your device about updates and activities.
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
+
+                        <View className="bg-blue-50 rounded-xl p-3 flex-row mb-6">
+                            <Ionicons name="information-circle" size={20} color="#3B82F6" style={{ marginRight: 8, marginTop: 2 }} />
+                            <Text className="text-blue-700 text-xs flex-1">
+                                Maximize your app usage by keeping notification settings active.
+                            </Text>
+                        </View>
+
+                        <View className="flex-row gap-3">
+                            <TouchableOpacity
+                                onPress={() => setShowNotificationsModal(false)}
+                                className="flex-1 py-3 bg-gray-100 rounded-xl items-center"
+                            >
+                                <Text className="text-gray-700 font-medium">Discard</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => setShowNotificationsModal(false)}
+                                className="flex-1 py-3 bg-blue-600 rounded-xl items-center"
+                            >
+                                <Text className="text-white font-medium">Apply Changes</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+
+            <Modal
+                visible={showDisplaySoundModal}
+                animationType="fade"
+                transparent={true}
+                onRequestClose={() => setShowDisplaySoundModal(false)}
+            >
+                <View className="flex-1 bg-black/50 items-center justify-center px-4">
+                    <View className="bg-white rounded-3xl p-6 w-full max-w-md">
+                        <View className="items-center mb-6">
+                            <Text className="text-xl font-semibold text-gray-900 mb-2">
+                                Display & Sound
+                            </Text>
+                            <Text className="text-gray-600 text-center text-sm">
+                                Manage how content is displayed to you.
+                            </Text>
+                        </View>
+
+                        <View className="mb-6">
+                            <View className="flex-row items-start py-4 border-b border-gray-100">
+                                <Switch
+                                    value={hapticsEnabled}
+                                    onValueChange={setHapticsEnabled}
+                                    trackColor={{ false: '#E5E7EB', true: '#50C878' }}
+                                    thumbColor="#ffffff"
+                                />
+                                <View className="flex-1 ml-4">
+                                    <Text className="text-gray-900 font-medium mb-1">
+                                        Enable Haptics
+                                    </Text>
+                                    <Text className="text-gray-500 text-sm leading-5">
+                                        Vibration feedback for interactions and gestures.
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
+
+                        <View className="bg-blue-50 rounded-xl p-3 flex-row mb-6">
+                            <Ionicons name="information-circle" size={20} color="#3B82F6" style={{ marginRight: 8, marginTop: 2 }} />
+                            <Text className="text-blue-700 text-xs flex-1">
+                                Haptic feedback enhances your app experience with tactile responses.
+                            </Text>
+                        </View>
+
+                        <View className="flex-row gap-3">
+                            <TouchableOpacity
+                                onPress={() => setShowDisplaySoundModal(false)}
+                                className="flex-1 py-3 bg-gray-100 rounded-xl items-center"
+                            >
+                                <Text className="text-gray-700 font-medium">Discard</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => setShowDisplaySoundModal(false)}
+                                className="flex-1 py-3 bg-blue-600 rounded-xl items-center"
+                            >
+                                <Text className="text-white font-medium">Apply Changes</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
             </Modal>
         </SafeAreaView>
     );

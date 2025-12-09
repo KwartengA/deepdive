@@ -9,7 +9,7 @@ interface SettingsSectionProps {
 const SettingsSection: React.FC<SettingsSectionProps> = ({ title, children }) => {
   return (
     <View className="mb-6">
-      <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 px-1">
+      <Text className="text-xs font-semibold text-black uppercase tracking-wide mb-3 px-3">
         {title}
       </Text>
       {children}

@@ -40,13 +40,6 @@ export const onboarding = [
         description: "Create tasks, set priorities, and schedule with ease—watch your goals come alive in animated progress",
   
     },
-    {
-        id: 3,
-        title:"Stay on Track Anywhere",
-        image: onboarding3,
-        description: "Search, track, and analyze your progress effortlessly—customize settings for notifications and profiles to own your flow",
-  
-    },
 
 ]
 

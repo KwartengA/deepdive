@@ -1,7 +1,6 @@
 import { Tabs } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from '@expo/vector-icons/Entypo';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 export default function TabsLayout() {
 
@@ -44,15 +43,6 @@ name = 'home'  options={{
 }}
 />
 
-<Tabs.Screen
-name = 'analytics'  options={{
-  title: "Analytics",
-  headerShown:false,
-  tabBarIcon:({color}) => (
-    <MaterialCommunityIcons name="google-analytics" size={28} color={color} />
-  )
-}}
-/>
 
 <Tabs.Screen
 name = 'settings'  options={{
