@@ -44,7 +44,9 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-      ]
+      ],
+      "expo-secure-store",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
@@ -69,6 +71,7 @@
         "tinted": "./assets/icons/ios-tinted.png"
       },
       "bundleIdentifier": "com.kwarteng.deepdive",
+      "googleServicesFile": "./google-services.json",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       },

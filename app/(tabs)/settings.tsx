@@ -1,16 +1,149 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, Modal, Image, Switch } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, Modal, Image, Switch, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import SettingsMenuItem from "@/components/SettingsMenuItem";
 import SettingsSection from "@/components/SettingsSection";
 import * as Sentry from "@sentry/react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUser } from "@clerk/clerk-expo";
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from "@expo/vector-icons";
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
+import Constants from "expo-constants";
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    }),
+  });
+  
+  async function sendPushNotification(expoPushToken: string) {
+    const message = {
+      to: expoPushToken,
+      sound: 'default',
+      title: 'Notifications Enabled!',
+      body: 'You will now receive push notifications from DeepDive.',
+      data: { type: 'settings_update', timestamp: new Date().toISOString() },
+    };
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+  }
+  
+  function handleRegistrationError(errorMessage: string) {
+    alert(errorMessage);
+    throw new Error(errorMessage);
+  }
+  
+  async function registerForPushNotificationsAsync() {
+    console.log('📝 Starting push notification registration...');
+
+    if (Platform.OS === 'android') {
+      console.log('🤖 Setting up Android notification channel...');
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+
+    if (Device.isDevice) {
+      console.log('✅ Running on physical device');
+
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      console.log('🔐 Existing permission status:', existingStatus);
+
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        console.log('🙋 Requesting notification permissions...');
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+        console.log('📨 Permission request result:', status);
+      }
+
+      if (finalStatus !== 'granted') {
+        handleRegistrationError('Permission not granted to get push token for push notification!');
+        return;
+      }
+
+      const projectId =
+        Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+      console.log('🔑 Using project ID:', projectId);
+
+      if (!projectId) {
+        handleRegistrationError('Project ID not found');
+        return;
+      }
+
+      try {
+        console.log('🎫 Requesting Expo Push Token...');
+        const pushTokenString = (
+          await Notifications.getExpoPushTokenAsync({
+            projectId,
+          })
+        ).data;
+        console.log('🎉 Got push token:', pushTokenString);
+        return pushTokenString;
+      } catch (e: unknown) {
+        console.error('💥 Error getting push token:', e);
+        handleRegistrationError(`${e}`);
+      }
+    } else {
+      console.warn('⚠️ Running on simulator/emulator - push notifications require a physical device');
+      handleRegistrationError('Must use physical device for push notifications');
+    }
+  }
 
 export default function Settings() {
     const { user } = useUser();
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [notification, setNotification] = useState<Notifications.Notification | undefined>( undefined );
+
+    useEffect(() => {
+        console.log('🔔 Initializing push notifications...');
+        console.log('📱 Device check:', Device.isDevice ? 'Physical device' : 'Simulator/Emulator');
+        console.log('🆔 Project ID:', Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId);
+
+        registerForPushNotificationsAsync()
+          .then(token => {
+            console.log('✅ Successfully registered for push notifications');
+            console.log('🎫 Expo Push Token:', token);
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            setExpoPushToken(token ?? '');
+          })
+          .catch((error: any) => {
+            console.error('❌ Failed to register for push notifications');
+            console.error('Error details:', error);
+            setExpoPushToken(`Error: ${error}`);
+          });
+
+        const notificationListener = Notifications.addNotificationReceivedListener(notification => {
+          console.log('📬 Notification received:', notification);
+          setNotification(notification);
+        });
+
+        const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
+          console.log('👆 Notification tapped:', response);
+        });
+
+        return () => {
+          notificationListener.remove();
+          responseListener.remove();
+        };
+      }, []);
+  
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const [showPersonalInfoModal, setShowPersonalInfoModal] = useState(false);
@@ -161,7 +294,21 @@ export default function Settings() {
                     </TouchableOpacity>
                 </View>
 
-                
+                {/* Developer Debug Info - Only visible in development */}
+                {__DEV__ && expoPushToken && (
+                    <View className="px-4 mb-4">
+                        <View className="bg-gray-800 rounded-xl p-4">
+                            <Text className="text-yellow-400 font-bold mb-2">🔧 DEV MODE - Push Token:</Text>
+                            <Text className="text-white text-xs font-mono" selectable>
+                                {expoPushToken}
+                            </Text>
+                            <Text className="text-gray-400 text-xs mt-2">
+                                This is only visible in development mode
+                            </Text>
+                        </View>
+                    </View>
+                )}
+
                 <View className="px-4">
                     <SettingsSection title="MY ACCOUNT">
 
@@ -425,7 +572,12 @@ export default function Settings() {
                                 <Text className="text-gray-700 font-medium">Discard</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                onPress={() => setShowNotificationsModal(false)}
+                                onPress={async () => {
+                                    if (pushNotificationsEnabled && expoPushToken) {
+                                        await sendPushNotification(expoPushToken);
+                                    }
+                                    setShowNotificationsModal(false);
+                                }}
                                 className="flex-1 py-3 bg-blue-600 rounded-xl items-center"
                             >
                                 <Text className="text-white font-medium">Apply Changes</Text>
